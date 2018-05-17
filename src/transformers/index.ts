@@ -1,11 +1,15 @@
-import NodeGit from 'nodegit';
+import * as NodeGit from 'nodegit';
+import * as path from 'path';
 
-export class Check {
-      static async preConditions {
-           const repo = await NodeGit.Repository.open(process.cwd);
-           const status = await repo.getStatus({});
-           const workingTreeEmpty = status.length === 0;
+export class Transformer {
+      static async resetState() {
+          const repo = await NodeGit.Repository.open(path.resolve(process.cwd()));
+          const reset = await NodeGit.Reset.reset(
+            repo,
+            await repo.getHeadCommit(),
+            NodeGit.Reset.TYPE.HARD,
+          );
 
-           return workingTreeEmpty;
+          return reset === 0;
       }
 }

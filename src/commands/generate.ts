@@ -1,6 +1,7 @@
 import {Command, flags} from '@oclif/command'
 import { Generator } from '../generators'
 import { Checker } from '../checks'
+import { Transformer } from '../transformers'
 
 enum ExitCodes {
     Success,
@@ -40,7 +41,7 @@ export default class Generate extends Command {
           this.log('Ensuring clean end state')
           // TODO: Checker.postConditions()
       } catch (error) {
-          // TODO: Transformer.resetState()
+          Transformer.resetState()
           this.warn(`${error.message}`);
           this.error('Reverting to original state', {exit: ExitCodes.Failure});
       }
