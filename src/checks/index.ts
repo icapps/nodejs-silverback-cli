@@ -7,7 +7,7 @@ export class Checker {
            const status = await repo.getStatus({});
 
            if(status.length) {
-             throw Error('Working tree not empty. Aborting.')
+             throw Error('Working tree not empty')
            }
 
            return true;

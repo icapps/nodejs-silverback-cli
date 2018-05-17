@@ -5,7 +5,8 @@ import { Transformer } from '../transformers'
 
 enum ExitCodes {
     Success,
-    Failure,
+    InvariantsNotMet,
+    OpFailure,
 };
 
 export default class Generate extends Command {
@@ -19,12 +20,16 @@ export default class Generate extends Command {
 
   async run() {
       try {
-          const {args} = this.parse(Generate)
-
           // Check pre-conditions
           this.log('Ensuring clean initial state')
           await Checker.preConditions();
+      } catch (error) {
+          this.warn(`${error.message}`);
+          this.error('Aborting operation', {exit: ExitCodes.InvariantsNotMet});
+      }
 
+      try {
+          const {args} = this.parse(Generate)
           // Create templates
           this.log(`Generating templates for ${args.name}`)
           const templates = new Generator({ name: args.name }).run()
@@ -43,7 +48,7 @@ export default class Generate extends Command {
       } catch (error) {
           Transformer.resetState()
           this.warn(`${error.message}`);
-          this.error('Reverting to original state', {exit: ExitCodes.Failure});
+          this.error('Reverting to original state', {exit: ExitCodes.OpFailure});
       }
 
       // Exit successfully
