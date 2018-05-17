@@ -19,7 +19,17 @@ export class Generator {
     return this.template.render(`${baseName}.njk`, options);
   }
 
-  run(templates = ['model', 'repository', 'controller', 'migration']) {
+  run(templates = [
+    'controller',
+    'migration',
+    'model',
+    'repository',
+    'route',
+    'schema',
+    'seed',
+    'serializer',
+    'service'
+  ]) {
     const context = {
       name: this.name,
       modelName: capitalize(this.name),
