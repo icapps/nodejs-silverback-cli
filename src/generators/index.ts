@@ -1,23 +1,19 @@
-import { templates } from '../constants';
-import * as nunjucks from 'nunjucks';
-import * as path from 'path';
-import { capitalize, upperCase, map } from 'lodash';
-import * as pluralize from 'pluralize';
+import {capitalize, map, upperCase} from 'lodash'
+import * as nunjucks from 'nunjucks'
+import * as pluralize from 'pluralize'
+
+import {templates} from '../constants'
 
 export class Generator {
   constructor(options) {
-    this.name = options.name;
+    this.name = options.name
 
-    const templateRoot = `${process.cwd}../../templates`;
+    const templateRoot = `${process.cwd}../../templates`
 
     this.template = nunjucks.configure(
       templateRoot,
-      { autoescape: true },
-    );
-  }
-
-  private generate(baseName, options) :string {
-    return this.template.render(`${baseName}.njk`, options);
+      {autoescape: true},
+    )
   }
 
   run() {
@@ -27,11 +23,15 @@ export class Generator {
       tableName: upperCase(this.name),
       pluralName: pluralize(this.name),
       pluralModelName: capitalize(pluralize(this.name)),
-    };
+    }
 
     return map(
       templates,
-      ({ name }) => this.generate(name, context)
-    );
+      ({name}) => this.generate(name, context)
+    )
+  }
+
+  private generate(baseName, options): string {
+    return this.template.render(`${baseName}.njk`, options)
   }
 }
