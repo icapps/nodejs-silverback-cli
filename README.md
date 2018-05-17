@@ -1,4 +1,4 @@
-silverback
+Silverback CLI
 ==========
 
 The Silverback Command Line
@@ -30,28 +30,23 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`silverback hello [FILE]`](#silverback-hello-file)
+* [`silverback generate [MODEL]`](#silverback-generate-model)
 * [`silverback help [COMMAND]`](#silverback-help-command)
 
-## `silverback hello [FILE]`
+## `silverback generate [MODEL]`
 
-describe the command here
+Use templates to scaffold a bunch of boilerplate code
 
 ```
 USAGE
-  $ silverback hello [FILE]
+  $ silverback generate [MODEL]
 
 OPTIONS
-  -f, --force
   -h, --help       show CLI help
-  -n, --name=name  name to print
 
 EXAMPLE
-  $ silverback hello
-  hello world from ./src/hello.ts!
+  $ silverback generate books
 ```
-
-_See code: [src/commands/hello.ts](https://github.com/icapps/nodejs-silverback-cli/blob/v0.0.0/src/commands/hello.ts)_
 
 ## `silverback help [COMMAND]`
 
@@ -68,5 +63,4 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v1.2.11/src/commands/help.ts)_
 <!-- commandsstop -->
