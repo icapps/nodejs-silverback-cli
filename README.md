@@ -35,7 +35,8 @@ USAGE
 
 ## `silverback generate [MODEL]`
 
-Use templates to scaffold a bunch of boilerplate code
+Use templates to scaffold a bunch of boilerplate code.
+Note that this subcommand will abort if the working tree is not clean. Likewise, it will revert to `HEAD` if any failures occur.
 
 ```
 USAGE
