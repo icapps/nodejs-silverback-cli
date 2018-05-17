@@ -36,7 +36,7 @@ export default class Generate extends Command {
 
           // Insert templates
           this.log('Inserting templates')
-          // TODO: Transformer.insert(templates)
+          // TODO: Transformer.insert(templates, args.name)
 
           // Modify existing code
           this.log('Modifying existing bindings')
