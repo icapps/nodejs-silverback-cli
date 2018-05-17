@@ -13,23 +13,23 @@ export default class Generate extends Command {
   async run() {
     const {args, flags} = this.parse(Generate)
 
-    // check pre-conditions
+    // Check pre-conditions
     this.log(`Ensuring clean initial state`);
     // TODO: Checker.preConditions()
 
-    // create templates
+    // Create templates
     this.log(`Generating templates for ${args.name}`)
     const templates = new Generator({ name: args.name }).run()
 
-    // insert templates
+    // Insert templates
     this.log(`Inserting templates`);
     // TODO: Transformer.insert(templates)
 
-    // modify existing code
+    // Modify existing code
     this.log(`Modifying existing bindings`);
     // TODO: Transformer.modify()
 
-    // check post-conditions
+    // Check post-conditions
     this.log(`Ensuring clean end state`);
     // TODO: Checker.postConditions()
   }
