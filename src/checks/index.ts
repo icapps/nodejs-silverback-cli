@@ -10,6 +10,6 @@ export class Checker {
              throw Error('Working tree not empty. Aborting.')
            }
 
-           return workingTreeEmpty;
+           return true;
       }
 }

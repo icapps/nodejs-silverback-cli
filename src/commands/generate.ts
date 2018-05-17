@@ -2,6 +2,11 @@ import {Command, flags} from '@oclif/command'
 import { Generator } from '../generators'
 import { Checker } from '../checks'
 
+enum ExitCodes {
+    Success,
+    Failure,
+};
+
 export default class Generate extends Command {
   static description = 'Use templates to scaffold a bunch of boilerplate code'
 
@@ -17,7 +22,7 @@ export default class Generate extends Command {
 
           // Check pre-conditions
           this.log('Ensuring clean initial state')
-          this.log(await Checker.preConditions());
+          await Checker.preConditions();
 
           // Create templates
           this.log(`Generating templates for ${args.name}`)
@@ -37,7 +42,10 @@ export default class Generate extends Command {
       } catch (error) {
           // TODO: Transformer.resetState()
           this.warn(`${error.message}`);
-          this.error('Reverting to original state', {exit: 2});
+          this.error('Reverting to original state', {exit: ExitCodes.Failure});
       }
+
+      // Exit successfully
+      this.exit(ExitCodes.Success)
   }
 }
