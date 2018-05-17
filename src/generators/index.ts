@@ -1,6 +1,7 @@
+import { templates } from '../constants';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
-import { capitalize, upperCase, map, keyBy, mapValues } from 'lodash';
+import { capitalize, upperCase, map } from 'lodash';
 import * as pluralize from 'pluralize';
 
 export class Generator {
@@ -19,17 +20,7 @@ export class Generator {
     return this.template.render(`${baseName}.njk`, options);
   }
 
-  run(templates = [
-    'controller',
-    'migration',
-    'model',
-    'repository',
-    'route',
-    'schema',
-    'seed',
-    'serializer',
-    'service'
-  ]) {
+  run() {
     const context = {
       name: this.name,
       modelName: capitalize(this.name),
@@ -38,9 +29,9 @@ export class Generator {
       pluralModelName: capitalize(pluralize(this.name)),
     };
 
-    return mapValues(
-      keyBy(templates),
-      template => this.generate(template, context)
+    return map(
+      templates,
+      ({ name }) => this.generate(name, context)
     );
   }
 }

@@ -15,20 +15,22 @@ export default class Generate extends Command {
 
     // check pre-conditions
     this.log(`Ensuring clean initial state`);
+    // TODO: Checker.preConditions()
 
     // create templates
     this.log(`Generating templates for ${args.name}`)
-    const generator = new Generator({ name: args.name })
-    const templates = generator.run();
-      console.log(templates)
+    const templates = new Generator({ name: args.name }).run()
 
     // insert templates
     this.log(`Inserting templates`);
+    // TODO: Transformer.insert(templates)
 
     // modify existing code
     this.log(`Modifying existing bindings`);
+    // TODO: Transformer.modify()
 
     // check post-conditions
     this.log(`Ensuring clean end state`);
+    // TODO: Checker.postConditions()
   }
 }
