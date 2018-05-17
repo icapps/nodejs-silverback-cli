@@ -1,0 +1,91 @@
+import * as uuid from 'uuid';
+import * as crypto from 'crypto';
+import { NotFoundError, BadRequestError } from 'tree-house-errors';
+import { getHashedPassword } from 'tree-house-authentication';
+import { {{ modelName }}, {{ modelName }}Create, {{ modelName }}Update, Partial{{ modelName }}Update } from '../models/{{ name }}.model';
+import { Filters } from '../models/filters.model';
+import { logger } from '../lib/logger';
+import { getInitialPwChangeContent } from '../templates/initial-pw.mail.template';
+import { errors } from '../config/errors.config';
+import { settings } from '../config/app.config';
+import * as {{ name }}Repository from '../repositories/{{ name }}.repository';
+import * as mailer from '../lib/mailer';
+
+/**
+ * Return a {{ name }} by id
+ */
+export async function findById({{ name }}Id: string): Promise<{{ modelName }}> {
+  const result = await {{ name }}Repository.findById({{ name }}Id);
+  if (!result) throw new NotFoundError();
+  return result;
+}
+
+
+/**
+ * Return all {{ pluralName }}
+ */
+export async function findAll(filters: Filters): Promise<{ data: {{ modelName }}[], totalCount: number }> {
+  try {
+    return await {{ name }}Repository.findAll(filters);
+  } catch (error) {
+    logger.error(`An error occured in the {{ name }} service: ${error}`);
+    throw error;
+  }
+}
+
+
+/**
+ * Create a new {{ name }}
+ */
+export async function create(values: {{ modelName }}Create, changePassword: boolean): Promise<{{ modelName }}> {
+  try {
+    return await {{ name }}Repository.create(values);
+  } catch (error) {
+    logger.error(`An error occured creating a {{ name }}: ${error}`);
+    throw error;
+  }
+}
+
+
+/**
+ * Update existing {{ name }}
+ */
+export async function update({{ name }}Id: string, values: {{ modelName }}Update): Promise<{{ modelName }}> {
+  try {
+    const result = await {{ name }}Repository.update({{ name }}Id, values);
+    if (!result) throw new NotFoundError();
+    return result;
+  } catch (error) {
+    logger.error(`An error occured updating a {{ name }}: ${error}`);
+    throw error;
+  }
+}
+
+
+/**
+ * Update existing properties of a {{ name }}
+ */
+export async function partialUpdate({{ name }}Id: string, values: Partial{{ modelName }}Update): Promise<{{ modelName }}> {
+  try {
+    const result = await {{ name }}Repository.update({{ name }}Id, values);
+    if (!result) throw new NotFoundError();
+    return result;
+  } catch (error) {
+    logger.error(`An error occured updating a {{ name }}: ${error}`);
+    throw error;
+  }
+}
+
+/**
+ * Remove an existing {{ name }}
+ */
+export async function remove({{ name }}Id: string): Promise<{}> {
+  try {
+    const result = await {{ name }}Repository.remove({{ name }}Id);
+    if (result.affectedRows === 0) throw new NotFoundError();
+    return result;
+  } catch (error) {
+    logger.error(`An error occured removing a {{ name }}: ${error}`);
+    throw error;
+  }
+}

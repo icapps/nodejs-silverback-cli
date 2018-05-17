@@ -1,0 +1,39 @@
+import * as Joi from 'joi';
+import { roles } from '../config/roles.config';
+
+const availableRoles = Object.keys(roles).reduce((array, current) => [...array, roles[current].code], []); // Collection to array
+
+export const userSchema = {
+  findAll{{ pluralModelName }}: {
+    query: {
+    },
+  },
+  findById: {
+    params: {
+      {{ name }}Id: Joi.string().guid(),
+    },
+  },
+  create: {
+    body: Joi.object({
+    }),
+  },
+  update: {
+    params: {
+      {{ name }}Id: Joi.string().guid(),
+    },
+    body: Joi.object({
+    }),
+  },
+  partialUpdate: {
+    params: {
+      {{ name }}Id: Joi.string().guid(),
+    },
+    body: Joi.object({
+    }),
+  },
+  remove: {
+    params: {
+      {{ name }}Id: Joi.string().guid(),
+    },
+  },
+};

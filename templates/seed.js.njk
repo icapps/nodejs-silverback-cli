@@ -1,0 +1,20 @@
+const dotenv = require('dotenv-safe');
+dotenv.load({ allowEmptyValues: true });
+
+const faker = require('faker');
+
+exports.seed = (knex) => {
+  return knex('{{ pluralName }}').del()
+    .then(() => {
+      const {{ pluralName }} = [];
+
+      for (let i = 0; i < 50; i += 1) {
+        {{ pluralName }}.push({
+           // Insert props here
+        });
+      }
+
+      // Inserts seed entries
+      return knex('{{ pluralName }}').insert({{ pluralName }});
+    });
+};

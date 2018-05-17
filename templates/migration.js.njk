@@ -1,0 +1,18 @@
+
+exports.up = async (knex) => {
+  await knex.schema.createTable('{{ pluralName }}', (table) => {
+    table.uuid("id").primary().defaultTo(knex.raw('uuid_generate_v1mc()')) // Primary key
+    table.specificType('record_id', 'serial'); // Record incrementing key
+
+    // Tracking
+    table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
+    table.timestamp('updated_at').notNullable().defaultTo(knex.fn.now());
+  });
+
+  // Triggers
+  await knex.raw('CREATE TRIGGER update_{{ pluralName }}_updated BEFORE UPDATE ON {{ pluralName }} FOR EACH ROW EXECUTE PROCEDURE update_modified_column();')
+};
+
+exports.down = (knex) => {
+  return knex.schema.dropTable('{{ pluralName }}');
+};

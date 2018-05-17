@@ -1,0 +1,8 @@
+import { Serializer } from 'jsonade';
+
+export const userSerializer = new Serializer('{{ pluralName }}', {
+  keyForAttribute: 'camelCase',
+  attributes: [
+    'id',
+  ],
+});

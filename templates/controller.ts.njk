@@ -1,0 +1,86 @@
+import * as httpStatus from 'http-status';
+import { Request, Response } from 'express';
+import { ValidationError, BadRequestError } from 'tree-house-errors';
+import { responder } from '../lib/responder';
+import { {{ name }}Serializer } from '../serializers/{{ name }}.serializer';
+import { roles } from '../config/roles.config';
+import { errors } from '../config/errors.config';
+import { roleSerializer } from '../serializers/role.serializer';
+import { AuthRequest } from '../models/request.model';
+import * as {{ name }}Service from '../services/{{ name }}.service';
+
+
+/**
+ * Get a {{ name }} by id
+ */
+export async function findById(req: Request, res: Response): Promise<void> {
+    const result = await {{ name }}Service.findById(req.params.{{ name }}Id);
+  responder.success(res, {
+    status: httpStatus.OK,
+    payload: result,
+      serializer: {{ name }}Serializer,
+  });
+}
+
+
+/**
+ * Return all {{ pluralName }}
+ */
+export async function findAll(req: Request, res: Response): Promise<void> {
+  const { data, totalCount } = await {{ name }}Service.findAll(req.query);
+  responder.success(res, {
+    totalCount,
+    status: httpStatus.OK,
+    payload: data,
+    serializer: {{ name }}Serializer,
+  });
+}
+
+
+/**
+ * Create a new {{ name }}
+ */
+export async function create(req: Request, res: Response): Promise<void> {
+  const result = await {{ name }}Service.create(req.body);
+  responder.success(res, {
+    status: httpStatus.CREATED,
+    payload: result,
+    serializer: {{ name }}Serializer,
+  });
+}
+
+
+/**
+ * Update an existing {{ name }}
+ */
+export async function update(req: Request, res: Response): Promise<void> {
+  const result = await {{ name }}Service.update(req.params.{{ name }}Id, req.body);
+  responder.success(res, {
+    status: httpStatus.OK,
+    payload: result,
+    serializer: {{ name }}Serializer,
+  });
+}
+
+
+/**
+ * Update a property of an existing {{ name }}
+ */
+export async function partialUpdate(req: Request, res: Response): Promise<void> {
+  const result = await {{ name }}Service.partialUpdate(req.params.{{ name }}Id, req.body);
+  responder.success(res, {
+    status: httpStatus.OK,
+    payload: result,
+    serializer: {{ name }}Serializer,
+  });
+}
+
+/**
+ * Remove an existing {{ name }}
+ */
+export async function remove(req: AuthRequest, res: Response): Promise<void> {
+  await {{ name }}Service.remove(req.params.{{ name }}Id);
+  responder.success(res, {
+    status: httpStatus.NO_CONTENT,
+  });
+}
