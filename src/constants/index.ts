@@ -1,4 +1,4 @@
-import * as path from 'path';
+import * as path from 'path'
 
 export const templates = [
     {
@@ -40,28 +40,28 @@ export const templates = [
 ]
 
 export class Env {
-    private static instance: Env;
-
-    private constructor(dir: string) {
-        this.dir = dir;
-    }
-
-    public dir: string;
-
     static initSettings(dir: string) {
         if (!Env.instance) {
-            Env.instance = new Env(path.resolve(dir));
-            return Env.instance;
+            Env.instance = new Env(path.resolve(dir))
+            return Env.instance
         }
 
-        throw Error('Settings already initialized');
+        throw Error('Settings already initialized')
     }
 
     static getSettings() {
         if (Env.instance) {
-            return Env.instance;
+            return Env.instance
         }
 
-        throw Error('Settings not initialized');
+        throw Error('Settings not initialized')
+    }
+
+    private static instance: Env
+
+    public dir: string
+
+    private constructor(dir: string) {
+        this.dir = dir
     }
 }

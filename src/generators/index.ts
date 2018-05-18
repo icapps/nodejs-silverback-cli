@@ -1,17 +1,13 @@
+import * as format from 'date-fns/format'
 import {capitalize, map, upperCase} from 'lodash'
 import * as nunjucks from 'nunjucks'
 import * as pluralize from 'pluralize'
-import * as format from 'date-fns/format'
 
 import {templates} from '../constants'
 
-interface GeneratorOptions {
-    name: string
-}
-
 export class Generator {
-    private name: string
-    private template: any;
+    private readonly name: string
+    private readonly template: any
 
     constructor(options: {name: string}) {
         this.name = options.name
@@ -43,13 +39,11 @@ export class Generator {
 
         return map(
             templates,
-            (tpl: {name: string, file: string}) => Object.assign(
-                {
+            (tpl: {name: string, file: string}) => ({
                     output: this.generate(tpl.name, context),
                     outputPath: this.generateString(tpl.file, filePathContext),
-                },
-                tpl,
-            ),
+                ...tpl,
+            }),
         )
     }
 

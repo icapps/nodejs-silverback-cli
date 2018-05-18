@@ -1,17 +1,17 @@
-import { Env } from '../constants'
-import * as NodeGit from 'nodegit';
-import * as path from 'path';
+import * as NodeGit from 'nodegit'
 
-export class Checker {
-    static async preConditions() {
-        const dir = Env.getSettings().dir;
-        const repo = await NodeGit.Repository.open(dir);
-        const status = await repo.getStatus({});
+import {Env} from '../constants'
 
-        if(status.length) {
+export const Checker = {
+    preConditions: async () => {
+        const dir = Env.getSettings().dir
+        const repo = await NodeGit.Repository.open(dir)
+        const status = await repo.getStatus({})
+
+        if (status.length) {
             throw Error('Working tree not empty')
         }
 
-        return true;
+        return true
     }
 }
