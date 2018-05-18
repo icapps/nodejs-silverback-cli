@@ -1,37 +1,63 @@
 import {capitalize, map, upperCase} from 'lodash'
 import * as nunjucks from 'nunjucks'
 import * as pluralize from 'pluralize'
+import * as format from 'date-fns/format'
 
 import {templates} from '../constants'
 
+interface GeneratorOptions {
+    name: string
+}
+
 export class Generator {
-  constructor(options) {
-    this.name = options.name
+    private name: string
+    private template: any;
 
-    const templateRoot = `${process.cwd}../../templates`
+    constructor(options: {name: string}) {
+        this.name = options.name
 
-    this.template = nunjucks.configure(
-      templateRoot,
-      {autoescape: true},
-    )
-  }
+        const templateRoot = `${process.cwd}../../templates`
 
-  run() {
-    const context = {
-      name: this.name,
-      modelName: capitalize(this.name),
-      tableName: upperCase(this.name),
-      pluralName: pluralize(this.name),
-      pluralModelName: capitalize(pluralize(this.name)),
+        this.template = nunjucks.configure(
+            templateRoot,
+            {autoescape: true},
+        )
     }
 
-    return map(
-      templates,
-      ({name}) => this.generate(name, context)
-    )
-  }
+    run() {
+        const filePathContext = {
+            name: this.name,
+            apiVersion: 'v1',
+            date: format(
+                new Date(),
+                'GGGGMMDDHHmmss'
+            ),
+        }
+        const context = {
+            name: this.name,
+            modelName: capitalize(this.name),
+            tableName: upperCase(this.name),
+            pluralName: pluralize(this.name),
+            pluralModelName: capitalize(pluralize(this.name)),
+        }
 
-  private generate(baseName, options): string {
-    return this.template.render(`${baseName}.njk`, options)
-  }
+        return map(
+            templates,
+            (tpl: {name: string, file: string}) => Object.assign(
+                {
+                    output: this.generate(tpl.name, context),
+                    outputPath: this.generateString(tpl.file, filePathContext),
+                },
+                tpl,
+            ),
+        )
+    }
+
+    private generateString(baseName: string, parameters: object): string {
+        return this.template.renderString(baseName, parameters)
+    }
+
+    private generate(baseName: string, parameters: object): string {
+        return this.template.render(`${baseName}.njk`, parameters)
+    }
 }
