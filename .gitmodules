@@ -1,0 +1,3 @@
+[submodule "test/nodejs-silverback"]
+	path = test/nodejs-silverback
+	url = http://github.com/icapps/nodejs-silverback
