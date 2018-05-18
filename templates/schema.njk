@@ -1,7 +1,4 @@
 import * as Joi from 'joi';
-import { roles } from '../config/roles.config';
-
-const availableRoles = Object.keys(roles).reduce((array, current) => [...array, roles[current].code], []); // Collection to array
 
 export const {{ name }}Schema = {
   findAll{{ pluralModelName }}: {

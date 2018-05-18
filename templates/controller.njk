@@ -1,11 +1,7 @@
 import * as httpStatus from 'http-status';
 import { Request, Response } from 'express';
-import { ValidationError, BadRequestError } from 'tree-house-errors';
 import { responder } from '../lib/responder';
 import { {{ name }}Serializer } from '../serializers/{{ name }}.serializer';
-import { roles } from '../config/roles.config';
-import { errors } from '../config/errors.config';
-import { roleSerializer } from '../serializers/role.serializer';
 import { AuthRequest } from '../models/request.model';
 import * as {{ name }}Service from '../services/{{ name }}.service';
 

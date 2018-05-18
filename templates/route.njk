@@ -3,7 +3,7 @@ import { handleAsyncFn, validateSchema } from 'tree-house';
 import { hasPermission } from '../../middleware/permission.middleware';
 import { roles } from '../../config/roles.config';
 import { {{ name }}Schema } from '../../schemes/{{ name }}.schema';
-import * {{ name }}controller from '../../controllers/{{ name }}.controller';
+import * as {{ name }}Controller from '../../controllers/{{ name }}.controller';
 
 const defaultOptions = { allowUnknownQuery: false };
 
@@ -11,30 +11,30 @@ export const routes: Router = Router({ mergeParams: true })
   .get('/', (req, res, next) =>
     hasPermission(req, res, next, roles.ADMIN),
     validateSchema({{ name }}Schema.findAll{{ pluralModelName }}, defaultOptions),
-    handleAsyncFn(controller.findAll))
+    handleAsyncFn({{ name }}Controller.findAll))
 
   .get('/:{{ name }}Id', (req, res, next) =>
     hasPermission(req, res, next, roles.ADMIN),
     validateSchema({{ name }}Schema.findById),
-    handleAsyncFn(controller.findById))
+    handleAsyncFn({{ name }}Controller.findById))
 
   .post('/', (req, res, next) =>
     hasPermission(req, res, next, roles.ADMIN),
     validateSchema({{ name }}Schema.create),
-    handleAsyncFn(controller.create))
+    handleAsyncFn({{ name }}Controller.create))
 
   .put('/:{{ name }}Id', (req, res, next) =>
     hasPermission(req, res, next, roles.ADMIN),
     validateSchema({{ name }}Schema.update),
-    handleAsyncFn(controller.update))
+    handleAsyncFn({{ name }}Controller.update))
 
   .patch('/:{{ name }}Id', (req, res, next) =>
     hasPermission(req, res, next, roles.ADMIN),
     validateSchema({{ name }}Schema.partialUpdate),
-    handleAsyncFn(controller.partialUpdate))
+    handleAsyncFn({{ name }}Controller.partialUpdate))
 
   .delete('/:{{ name }}Id', (req, res, next) =>
     hasPermission(req, res, next, roles.ADMIN),
     validateSchema({{ name }}Schema.remove),
-    handleAsyncFn(controller.remove));
+    handleAsyncFn({{ name }}Controller.remove));
 

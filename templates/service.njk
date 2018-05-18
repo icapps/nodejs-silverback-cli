@@ -1,15 +1,8 @@
-import * as uuid from 'uuid';
-import * as crypto from 'crypto';
-import { NotFoundError, BadRequestError } from 'tree-house-errors';
-import { getHashedPassword } from 'tree-house-authentication';
+import { NotFoundError } from 'tree-house-errors';
 import { {{ modelName }}, {{ modelName }}Create, {{ modelName }}Update, Partial{{ modelName }}Update } from '../models/{{ name }}.model';
 import { Filters } from '../models/filters.model';
 import { logger } from '../lib/logger';
-import { getInitialPwChangeContent } from '../templates/initial-pw.mail.template';
-import { errors } from '../config/errors.config';
-import { settings } from '../config/app.config';
 import * as {{ name }}Repository from '../repositories/{{ name }}.repository';
-import * as mailer from '../lib/mailer';
 
 /**
  * Return a {{ name }} by id
@@ -37,7 +30,7 @@ export async function findAll(filters: Filters): Promise<{ data: {{ modelName }}
 /**
  * Create a new {{ name }}
  */
-export async function create(values: {{ modelName }}Create, changePassword: boolean): Promise<{{ modelName }}> {
+export async function create(values: {{ modelName }}Create): Promise<{{ modelName }}> {
   try {
     return await {{ name }}Repository.create(values);
   } catch (error) {
