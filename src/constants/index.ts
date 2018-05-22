@@ -39,6 +39,24 @@ export const templates = [
     },
 ]
 
+export const enum ModificationTypes {
+    Import,
+    Export,
+    ListAdd,
+}
+
+export const modifications = [
+    {
+        file: 'src/routes/{{ apiVersion }}/index.ts',
+        modifications: [
+            {
+                change: ModificationTypes.Import,
+                template: '\nimport { routes as {{ name }}Routes } from \'./{{ name }}.routes\';'
+            },
+        ]
+    },
+]
+
 export class Env {
     static initSettings(dir: string) {
         if (!Env.instance) {

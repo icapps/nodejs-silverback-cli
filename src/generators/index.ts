@@ -3,7 +3,7 @@ import {capitalize, map, upperCase} from 'lodash'
 import * as nunjucks from 'nunjucks'
 import * as pluralize from 'pluralize'
 
-import {templates} from '../constants'
+import {templates, modifications} from '../constants'
 
 export class Generator {
     private readonly name: string
@@ -29,6 +29,7 @@ export class Generator {
                 'GGGGMMDDHHmmss'
             ),
         }
+
         const context = {
             name: this.name,
             modelName: capitalize(this.name),
@@ -37,14 +38,27 @@ export class Generator {
             pluralModelName: capitalize(pluralize(this.name)),
         }
 
-        return map(
-            templates,
-            (tpl: {name: string, file: string}) => ({
+        return {
+            templates: map(
+                templates,
+                (tpl: {name: string, file: string}) => ({
                     output: this.generate(tpl.name, context),
                     outputPath: this.generateString(tpl.file, filePathContext),
-                ...tpl,
-            }),
-        )
+                    ...tpl,
+                }),
+            ),
+            modifications: map(
+                modifications,
+                fileMod => ({
+                    ...fileMod,
+                    outputPath: this.generateString(fileMod.file, filePathContext),
+                    modifications: map(fileMod.modifications, mod => ({
+                        output: this.generateString(mod.template, context),
+                        ...mod,
+                    })),
+                }),
+            ),
+        }
     }
 
     private generateString(baseName: string, parameters: object): string {

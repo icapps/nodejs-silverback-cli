@@ -25,35 +25,38 @@ export default class Generate extends Command {
 
       Env.initSettings(flags.dir || process.cwd())
 
-      try {
-          // Check pre-conditions
-          this.log('Ensuring clean initial state')
-          await Checker.preConditions()
-      } catch (error) {
-          this.warn(`${error.message}`)
-          this.error('Aborting operation', {exit: ExitCodes.InvariantsNotMet})
-      }
+      // try {
+      //     // Check pre-conditions
+      //     this.log('Ensuring clean initial state')
+      //     await Checker.preConditions()
+      // } catch (error) {
+      //     this.warn(`${error.message}`)
+      //     this.error('Aborting operation', {exit: ExitCodes.InvariantsNotMet})
+      // }
 
       try {
           // Create templates
           this.log(`Generating templates for ${args.name}`)
-          const templates = new Generator({name: args.name}).run()
+          const { templates, modifications } = new Generator({name: args.name}).run()
+          console.log(modifications[0])
 
-          // Insert templates
-          this.log('Inserting templates')
-          await Transformer.insert(templates)
+          // // Insert templates
+          // this.log('Inserting templates')
+          // await Transformer.insert(templates)
 
-          // Modify existing code
-          this.log('Modifying existing bindings')
-          // TODO: Transformer.modify()
+          // // Modify existing code
+          // this.log('Modifying existing bindings')
+          // // TODO: Transformer.modify()
+          await Transformer.modifyExistingFiles(modifications)
 
-          // Check post-conditions
-          this.log('Ensuring clean end state')
-          // TODO: Checker.postConditions()
+
+          // // Check post-conditions
+          // this.log('Ensuring clean end state')
+          // // TODO: Checker.postConditions()
       } catch (error) {
-          await Transformer.resetState()
-          this.warn(`${error.message}`)
-          this.error('Reverting to original state', {exit: ExitCodes.OpFailure})
+          // await Transformer.resetState()
+          // this.warn(`${error.message}`)
+          // this.error('Reverting to original state', {exit: ExitCodes.OpFailure})
       }
 
       // Exit successfully
