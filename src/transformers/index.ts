@@ -3,6 +3,7 @@ import {map} from 'lodash'
 import * as NodeGit from 'nodegit'
 import * as path from 'path'
 import {promisify} from 'util'
+import {Checker} from '../checks'
 
 import {Env} from '../constants'
 
@@ -24,22 +25,26 @@ export const Transformer = {
                     )
                 }
             ))
-
+        } catch (fileError) {
+            throw fileError
+        } finally {
             const index = await repo.refreshIndex()
 
             // Add all files
-            await index.addAll(map(templates, (template: {outputPath: string}) => template.outputPath))
+            await index.addAll(map(
+                templates,
+                (template: {outputPath: string}) => template.outputPath))
 
             // Write to stage index
             return index.write()
-        } catch (fileError) {
-            throw fileError
         }
     },
 
     resetState: async () => {
         const dir: string = Env.getSettings().dir
         const repo = await NodeGit.Repository.open(dir)
+
+        // Reset committed files
         const reset = await NodeGit.Reset.reset(
             repo,
             await repo.getHeadCommit(),
