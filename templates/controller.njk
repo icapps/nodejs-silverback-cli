@@ -9,11 +9,11 @@ import * as {{ name }}Service from '../services/{{ name }}.service';
  * Get a {{ name }} by id
  */
 export async function findById(req: Request, res: Response): Promise<void> {
-    const result = await {{ name }}Service.findById(req.params.{{ name }}Id);
+  const result = await {{ name }}Service.findById(req.params.{{ name }}Id);
   responder.success(res, {
     status: httpStatus.OK,
     payload: result,
-      serializer: {{ name }}Serializer,
+    serializer: {{ name }}Serializer,
   });
 }
 

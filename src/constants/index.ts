@@ -47,12 +47,26 @@ export const enum ModificationTypes {
 
 export const modifications = [
     {
+        file: 'src/constants.ts',
+        modifications: [
+            {
+                change: ModificationTypes.ListAdd,
+                id: 'tableNames',
+                template: '\n  {{ codeName }}: \'{{ pluralName }}\','
+            },
+        ]
+    },
+    {
         file: 'src/routes/{{ apiVersion }}/index.ts',
         modifications: [
             {
                 change: ModificationTypes.Import,
                 template: '\nimport { routes as {{ name }}Routes } from \'./{{ name }}.routes\';'
             },
+            {
+                change: ModificationTypes.Export,
+                template: '\n  .use(\'/{{name}}\', {{ name }}Routes);'
+            }
         ]
     },
 ]

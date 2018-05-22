@@ -11,7 +11,7 @@ const defaultReturnValues = ['id'];
  * Create new {{ name }}
  */
 export async function create(values: {{ modelName }}Create): Promise<{{ modelName }}> {
-  const query = db(tableNames.{{ tableName }})
+  const query = db(tableNames.{{ codeName }})
     .insert(values, defaultReturnValues);
 
   logger.debug(`Create new {{ name }}: ${query.toString()}`);
@@ -23,7 +23,7 @@ export async function create(values: {{ modelName }}Create): Promise<{{ modelNam
  * Update an existing {{ name }}
  */
 export async function update({{ name }}Id: string, values: {{ modelName }}Update | Partial{{ modelName }}Update): Promise<{{ modelName }}> {
-  const query = db(tableNames.{{ tableName }})
+  const query = db(tableNames.{{ codeName }})
     .update(values, defaultReturnValues)
     .where('id', {{ name }}Id);
 
@@ -35,7 +35,7 @@ export async function update({{ name }}Id: string, values: {{ modelName }}Update
  * Remove an existing {{ name }}
  */
 export async function remove({{ name }}Id: string): Promise<{ affectedRows: number }> {
-  const query = db(tableNames.{{ tableName }})
+  const query = db(tableNames.{{ codeName }})
     .del()
     .where('id', {{ name }}Id);
 
@@ -53,7 +53,7 @@ export async function findAll(options: Filters = {}): Promise<{ data: {{ modelNa
   const sortFields = ['id'];
 
   const query = selectAndCount(db, defaultReturnValues)
-    .from(tableNames.{{ tableName }});
+    .from(tableNames.{{ codeName }});
 
   applyPagination(query, allOptions);
   applySearch(query, allOptions, searchFields);
@@ -69,7 +69,7 @@ export async function findAll(options: Filters = {}): Promise<{ data: {{ modelNa
  * Get a {{ name }} by id
  */
 export async function findById(id: string): Promise<{{ modelName }}> {
-  const query = db(tableNames.{{ tableName }})
+  const query = db(tableNames.{{ codeName }})
     .select(defaultReturnValues)
     .where('id', id)
     .first();

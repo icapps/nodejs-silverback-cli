@@ -10,7 +10,8 @@ exports.seed = (knex) => {
 
       for (let i = 0; i < 50; i += 1) {
         {{ pluralName }}.push({
-           // Insert props here
+           // Workaround to allow entirely DEFAULT inserts
+            id: knex.raw('DEFAULT')
         });
       }
 

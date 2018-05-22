@@ -3,7 +3,7 @@ import {capitalize, map, upperCase} from 'lodash'
 import * as nunjucks from 'nunjucks'
 import * as pluralize from 'pluralize'
 
-import {templates, modifications} from '../constants'
+import {modifications, templates} from '../constants'
 
 export class Generator {
     private readonly name: string
@@ -34,6 +34,7 @@ export class Generator {
             name: this.name,
             modelName: capitalize(this.name),
             tableName: upperCase(this.name),
+            codeName: upperCase(pluralize(this.name)),
             pluralName: pluralize(this.name),
             pluralModelName: capitalize(pluralize(this.name)),
         }
