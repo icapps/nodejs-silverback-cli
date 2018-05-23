@@ -47,7 +47,7 @@ export default class Generate extends Command {
           this.log('Modifying existing bindings')
           await Transformer.modifyExistingFiles(modifications)
       } catch (error) {
-          // await Transformer.resetState()
+          await Transformer.resetState()
           this.warn(`${error.message}`)
           this.error('Reverting to original state', {exit: ExitCodes.OpFailure})
       }
