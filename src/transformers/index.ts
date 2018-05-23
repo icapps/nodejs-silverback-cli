@@ -7,9 +7,19 @@ import {promisify} from 'util'
 
 import {Env, ModificationTypes} from '../constants'
 
+interface Modification {
+    change: ModificationTypes,
+    output: string,
+}
+
+interface FileMod {
+    outputPath: string,
+    modifications: Modification[],
+}
+
 interface Statement {
-    end: string,
-    start: string,
+    end: number,
+    start: number,
     kind: ts.SyntaxKind,
 }
 
@@ -24,6 +34,7 @@ async function addPathsToStage(paths: string[]) {
     const index = await repo.refreshIndex()
 
     // Add all files
+    // @ts-ignore
     await index.addAll(paths)
 
     // Write to stage index
@@ -34,7 +45,6 @@ export const Transformer = {
     insert: async (templates: object[]) => {
         const dir: string = Env.getSettings().dir
 
-        const appendFailOnPathExistsFlag = 'ax'
         try {
             await Promise.all(map(
                 templates,
@@ -51,6 +61,7 @@ export const Transformer = {
             throw fileError
         } finally {
             // Add all files
+            // @ts-ignore
             await addPathsToStage(map(
                 templates,
                 (template: {outputPath: string}) => template.outputPath))
@@ -62,6 +73,7 @@ export const Transformer = {
         const repo = await NodeGit.Repository.open(dir)
 
         // Reset committed files
+        // @ts-ignore
         const reset = await NodeGit.Reset.reset(
             repo,
             await repo.getHeadCommit(),
@@ -71,7 +83,7 @@ export const Transformer = {
         return reset === 0
     },
 
-    modifyExistingFiles: async fileMods => {
+    modifyExistingFiles: async (fileMods: FileMod[]) => {
         try {
             return Promise.all(map(fileMods, async fileMod => {
                 const dir: string = Env.getSettings().dir
@@ -97,6 +109,7 @@ export const Transformer = {
                 const fileUpdates = map(fileMod.modifications, sourceMod => {
                     // TODO: Refactor into separate functions
                     if (sourceMod.change === ModificationTypes.Import) {
+                        // @ts-ignore
                         const targetStatement = find(statements, (statement: Statement, index: number) => {
                             if (statement.kind !== ts.SyntaxKind.ImportDeclaration) {
                                 return false
@@ -112,8 +125,14 @@ export const Transformer = {
                             return true
                         })
 
+                        if (!targetStatement) {
+                            throw new Error('Could not find target for import modification')
+                        }
+
                         return {
+                            // @ts-ignore
                             start: targetStatement.end,
+                            // @ts-ignore
                             end: targetStatement.end,
                             replacement: sourceMod.output,
                         }
@@ -133,8 +152,11 @@ export const Transformer = {
                                 return false
                             }
 
+                            // @ts-ignore
                             const variableStatement = statement as ts.VariableStatement
+
                             const declaration = variableStatement.declarationList.declarations[0]
+                            // @ts-ignore
                             if (declaration.name.escapedText !== sourceMod.id) {
                                 return false
                             }
@@ -142,6 +164,7 @@ export const Transformer = {
                             return true
                         })
 
+                        // @ts-ignore
                         const lastStatementPos = last(targetStatement.declarationList.declarations[0].initializer.properties).end + 1
 
                         return {
@@ -152,6 +175,7 @@ export const Transformer = {
                     }
                 }).reverse() // We reverse the modifications map so changes in text length don't impact replacement targets
 
+                // @ts-ignore
                 for (const {start, end, replacement} of fileUpdates) {
                     sourceCode = sourceCode.slice(0, start) + replacement + sourceCode.slice(end)
                 }
@@ -162,8 +186,8 @@ export const Transformer = {
                     {flag: FS_FLAGS.WRITE_CREATEIFNOTEXISTS}
                 )
             }))
-        } catch (ModError) {
-            throw ModError
+        } catch (modError) {
+            throw modError
         } finally {
             await addPathsToStage(map(
                 fileMods,
