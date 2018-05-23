@@ -1,0 +1,37 @@
+import * as uuid from 'uuid';
+import { {{ modelName }}, {{ modelName }}Create } from '../../../src/models/{{ name }}.model';
+import { tableNames } from '../../../src/constants';
+import { db } from '../../../src/lib/db';
+import * as {{ name }}Repository from '../../../src/repositories/{{ name }}.repository';
+
+export const valid{{ modelName }}: {{ modelName }}Create = {
+};
+
+export const valid{{ pluralModelName }}: {{ modelName }}Create[] = [
+  {},
+  {},
+  {},
+];
+
+export async function create{{ pluralModelName }}({{ pluralName }}: {{ modelName }}Create[]) {
+  for (const {{ name }}Values of {{ pluralName }}) {
+    await {{ name }}Repository.create(testValues);
+  }
+  return await {{ name }}Repository.findAll();
+}
+
+export function create{{ modelName }}(values: {{ modelName }}Create) {
+  return {{ name }}Repository.create(values);
+}
+
+export function findById(id: string) {
+  return {{ name }}Repository.findById(id);
+}
+
+/**
+ * Clear all {{ name }} data except admin and regular
+ */
+export async function clear{{ modelName }}Data() {
+  const query = db(tableNames.{{ codeName }}).del();
+  return await query;
+}

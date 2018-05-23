@@ -37,6 +37,18 @@ export const templates = [
         name: 'service',
         file: 'src/services/{{ name }}.service.ts',
     },
+    {
+        name: 'integration_test',
+        file: 'tests/integration/{{ name }}.route.test.ts',
+    },
+    {
+        name: 'test_payload',
+        file: 'tests/_helpers/payload-schemes/{{ name }}.schema.ts',
+    },
+    {
+        name: 'mock',
+        file: 'tests/_helpers/mockdata/{{ name }}.data.ts',
+    },
 ]
 
 export const enum ModificationTypes {

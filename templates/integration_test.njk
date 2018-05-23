@@ -1,0 +1,262 @@
+import * as request from 'supertest';
+import * as httpStatus from 'http-status';
+import * as Joi from 'joi';
+import * as faker from 'faker';
+import * as _ from 'lodash';
+import { app } from '../../src/app';
+import { clearAll } from '../_helpers/mockdata/data';
+import { valid{{ pluralModelName }}, valid{{ modelName }}, create{{ pluralModelName }}, clear{{ modelName }}Data, create{{ modelName }}, findById } from '../_helpers/mockdata/{{ name }}.data';
+import { {{ pluralName }}Schema, {{ name }}Schema, create{{ modelName }}Schema, {{ name }}ByIdSchema } from '../_helpers/payload-schemes/{{ name }}.schema';
+import { rolesSchema } from '../_helpers/payload-schemes/role.schema';
+import { getValidJwt, getAdminToken, getUserToken } from '../_helpers/mockdata/auth.data';
+import { roles } from '../../src/config/roles.config';
+import { errors } from '../../src/config/errors.config';
+import { findRoleByCode } from '../../src/lib/utils';
+import * as mailer from '../../src/lib/mailer';
+
+describe('/{{ name }}', () => {
+  const prefix = `/api/${process.env.API_VERSION}`;
+  let userToken;
+  let adminToken;
+
+  beforeAll(async () => {
+    await clearAll(); // Full db clear
+    userToken = await getUserToken(); // Also creates user
+    adminToken = await getAdminToken(); // Also creates user
+  });
+
+  afterAll(async () => {
+    await clearAll(); // Full db clear - empty db after tests
+    jest.clearAllMocks();
+  });
+
+  describe('GET /', () => {
+      beforeAll(async () => {
+          await create{{ pluralModelName }}(valid{{ pluralModelName }}); // Creates 3 valid {{ pluralName }}
+      });
+
+    afterAll(async () => {
+        await clear{{ modelName }}Data(); // Clear {{ name }} db
+    });
+
+    it('Should return all {{ pluralName }} with default pagination', async () => {
+      const { body, status } = await request(app)
+        .get(`${prefix}/{{ name }}`)
+        .set('Authorization', `Bearer ${adminToken}`);
+
+      expect(status).toEqual(httpStatus.OK);
+      expect(body.data).toHaveLength(3);
+      expect(body.meta).toMatchObject({
+        type: '{{ pluralName }}',
+        count: 3,
+        totalCount: 3,
+      });
+
+      Joi.validate(body, {{ pluralName }}Schema, (err, value) => {
+        if (err) throw err;
+        if (!value) throw new Error('no value to check schema');
+      });
+    });
+
+    it('Should return all {{ pluralName }} within provided pagination', async () => {
+      const { body, status } = await request(app)
+        .get(`${prefix}/{{ name }}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .query('limit=1')
+        .query('offset=2');
+
+      expect(status).toEqual(httpStatus.OK);
+      expect(body.data).toHaveLength(1);
+      expect(body.meta).toMatchObject({
+        type: '{{ pluralName }}',
+        count: 1,
+        totalCount: 3,
+      });
+    });
+
+
+    it('Should throw an error when user has no admin rights', async () => {
+      const { body, status } = await request(app)
+        .get(`${prefix}/{{ name }}`)
+        .set('Accept-Language', 'nl')
+        .set('Authorization', `Bearer ${userToken}`);
+
+      expect(status).toEqual(httpStatus.UNAUTHORIZED);
+      expect(body.errors[0].code).toEqual(errors.NO_PERMISSION.code);
+      expect(body.errors[0].title).toEqual(errors.NO_PERMISSION.message);
+    });
+  });
+
+  describe('GET /:{{ name }}Id', () => {
+    let {{ name }};
+
+    beforeAll(async () => {
+      {{ name }} = await create{{ modelName }}(valid{{ modelName }});
+    });
+
+    afterAll(async () => {
+      await clear{{ modelName }}Data(); // Clear {{ name }} db 
+    });
+
+    it('Should succesfully return {{ name }} via id', async () => {
+      const { body, status } = await request(app)
+        .get(`${prefix}/{{ name }}/{% raw %}${{% endraw %}{{ name }}.id}`)
+        .set('Authorization', `Bearer ${adminToken}`);
+
+      expect(status).toEqual(httpStatus.OK);
+      expect(body.data).toMatchObject({
+        id: {{ name }}.id,
+      });
+
+      Joi.validate(body, {{ name }}ByIdSchema, (err, value) => {
+        if (err) throw err;
+        if (!value) throw new Error('no value to check schema');
+      });
+    });
+
+    it('Should throw an error when {{ name }} id is not a valid guid', async () => {
+      const { body, status } = await request(app)
+        .get(`${prefix}/{{ name }}/unknownId`)
+        .set('Authorization', `Bearer ${adminToken}`);
+      expect(status).toEqual(httpStatus.BAD_REQUEST);
+    });
+
+    it('Should throw an error when {{ name }} does not exist', async () => {
+      const { body, status } = await request(app)
+        .get(`${prefix}/{{ name }}/${faker.random.uuid()}`)
+        .set('Authorization', `Bearer ${adminToken}`);
+      expect(status).toEqual(httpStatus.NOT_FOUND);
+    });
+
+    it('Should throw an error when {{ name }} has no admin rights', async () => {
+      const { body, status } = await request(app)
+        .get(`${prefix}/{{ name }}/{% raw %}${{% endraw %}{{ name }}.id}`)
+        .set('Authorization', `Bearer ${userToken}`);
+
+      expect(status).toEqual(httpStatus.UNAUTHORIZED);
+      expect(body.errors[0].code).toEqual(errors.NO_PERMISSION.code);
+      expect(body.errors[0].title).toEqual(errors.NO_PERMISSION.message);
+    });
+  });
+
+  describe('POST /', () => {
+    afterAll(async () => {
+      await clear{{ modelName }}Data(); // Clear {{ name }}
+    });
+
+    it('Should succesfully create a new {{ name }}', async () => {
+      const { body, status } = await request(app)
+        .post(`${prefix}/{{ name }}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+        });
+
+      expect(status).toEqual(httpStatus.CREATED);
+      Joi.validate(body, create{{ modelName }}Schema, (err, value) => {
+        if (err) throw err;
+        if (!value) throw new Error('no value to check schema');
+      });
+    });
+
+    it('Should throw a validation error when not all fields are provided', async () => {
+      // TODO: To be implemented
+    });
+
+    it('Should throw an error when user has no admin rights', async () => {
+      const { body, status } = await request(app)
+        .post(`${prefix}/{{ name }}`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({
+        });
+
+      expect(status).toEqual(httpStatus.UNAUTHORIZED);
+      expect(body.errors[0].code).toEqual(errors.NO_PERMISSION.code);
+      expect(body.errors[0].title).toEqual(errors.NO_PERMISSION.message);
+    });
+  });
+
+  describe('PUT /:{{ name }}Id', () => {
+    let {{ name }};
+
+    beforeAll(async () => {
+      {{ name }} = await create{{ modelName }}(valid{{ modelName }});
+    });
+
+    afterAll(async () => {
+      await clear{{ modelName }}Data(); // Clear {{ name }} db
+    });
+
+    it('Should succesfully update an existing {{ name }}', async () => {
+      // TODO: To be implemented
+    });
+
+    it('Should throw an error when {{ name }} id is not a valid guid', async () => {
+      const { body, status } = await request(app)
+        .put(`${prefix}/{{ name }}/unknownId`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          updatedAt: new Date().toISOString()
+        });
+      expect(status).toEqual(httpStatus.BAD_REQUEST);
+    });
+
+    it('Should throw an error when {{ name }} does not exist', async () => {
+      const { body, status } = await request(app)
+        .put(`${prefix}/{{ name }}/${faker.random.uuid()}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          updatedAt: new Date().toISOString()
+        });
+      expect(status).toEqual(httpStatus.NOT_FOUND);
+    });
+
+    it('Should throw an error when not all fields are provided', async () => {
+      // TODO: To be implemented
+    });
+  });
+
+  describe('PATCH /:userId', () => {
+      // TODO: To be implemented
+  });
+
+  describe('DELETE /:{{ name }}Id', () => {
+    let {{ name }};
+
+    beforeAll(async () => {
+      {{ name }} = await create{{ modelName }}(valid{{ modelName }});
+    });
+
+    afterAll(async () => {
+      await clear{{ modelName }}Data(); // Clear {{ name }} db
+    });
+
+    it('Should succesfully delete an existing {{ name }}', async () => {
+      const { body, status } = await request(app)
+        .delete(`${prefix}/{{ name }}/{% raw %}${{% endraw %}{{ name }}.id}`)
+        .set('Authorization', `Bearer ${adminToken}`);
+
+      expect(status).toEqual(httpStatus.NO_CONTENT);
+      expect(body).toEqual({});
+
+      const removed = await findById({{ name }}.id);
+      expect(removed).toBeUndefined();
+    });
+
+    it('Should throw an error when {{ name }} does not exist', async () => {
+      const { body, status } = await request(app)
+        .delete(`${prefix}/{{ name }}/${faker.random.uuid()}`)
+        .set('Authorization', `Bearer ${adminToken}`);
+
+      expect(status).toEqual(httpStatus.NOT_FOUND);
+    });
+
+    it('Should throw an error when {{ name }} id is not a valid guid', async () => {
+      const { body, status } = await request(app)
+        .delete(`${prefix}/{{ name }}/unknownId`)
+        .set('Authorization', `Bearer ${adminToken}`);
+
+      expect(status).toEqual(httpStatus.BAD_REQUEST);
+    });
+  });
+});
+

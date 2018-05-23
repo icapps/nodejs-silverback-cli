@@ -1,0 +1,28 @@
+import * as Joi from 'joi';
+
+export const {{ name }}Schema = Joi.object({
+  id: Joi.string().guid().required(),
+});
+
+export const create{{ modelName }}Schema = Joi.object().keys({
+  meta: Joi.object().keys({
+    type: Joi.string().required().only('{{ pluralName }}'),
+  }),
+  data: {{ name }}Schema,
+});
+
+export const {{ name }}ByIdSchema = Joi.object().keys({
+  meta: Joi.object().keys({
+    type: Joi.string().required().only('{{ pluralName }}'),
+  }),
+  data: {{ name }}Schema,
+});
+
+export const {{ pluralName }}Schema = Joi.object().keys({
+  meta: Joi.object().keys({
+    type: Joi.string().required().only('{{ pluralName }}'),
+    count: Joi.number().required(),
+    totalCount: Joi.number().required(),
+  }),
+  data: Joi.array().items({{ name }}Schema),
+});
