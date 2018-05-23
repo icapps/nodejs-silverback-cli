@@ -51,8 +51,5 @@ export default class Generate extends Command {
           this.warn(`${error.message}`)
           this.error('Reverting to original state', {exit: ExitCodes.OpFailure})
       }
-
-      // Exit successfully
-      this.exit(ExitCodes.Success)
   }
 }
