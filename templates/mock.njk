@@ -15,7 +15,7 @@ export const valid{{ pluralModelName }}: {{ modelName }}Create[] = [
 
 export async function create{{ pluralModelName }}({{ pluralName }}: {{ modelName }}Create[]) {
   for (const {{ name }}Values of {{ pluralName }}) {
-    await {{ name }}Repository.create(testValues);
+    await {{ name }}Repository.create({{ name }}Values);
   }
   return await {{ name }}Repository.findAll();
 }

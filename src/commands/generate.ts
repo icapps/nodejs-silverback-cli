@@ -46,10 +46,6 @@ export default class Generate extends Command {
           // Modify existing code
           this.log('Modifying existing bindings')
           await Transformer.modifyExistingFiles(modifications)
-
-          // Check post-conditions
-          this.log('Ensuring clean end state')
-          // TODO: Checker.postConditions()
       } catch (error) {
           // await Transformer.resetState()
           this.warn(`${error.message}`)

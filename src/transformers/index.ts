@@ -13,6 +13,11 @@ interface Statement {
     kind: ts.SyntaxKind,
 }
 
+const FS_FLAGS = {
+    APPEND_FAILONPATHEXISTSFLAG: 'ax',
+    WRITE_CREATEIFNOTEXISTS: 'w',
+}
+
 async function addPathsToStage(paths: string[]) {
     const dir: string = Env.getSettings().dir
     const repo = await NodeGit.Repository.open(dir)
@@ -38,7 +43,7 @@ export const Transformer = {
                     await promisify(writeFile)(
                         fullPath,
                         template.output,
-                        {flag: appendFailOnPathExistsFlag}
+                        {flag: FS_FLAGS.APPEND_FAILONPATHEXISTSFLAG}
                     )
                 }
             ))
@@ -154,7 +159,7 @@ export const Transformer = {
                 return promisify(writeFile)(
                     fullPath,
                     sourceCode,
-                    {flag: 'w'}
+                    {flag: FS_FLAGS.WRITE_CREATEIFNOTEXISTS}
                 )
             }))
         } catch (ModError) {
