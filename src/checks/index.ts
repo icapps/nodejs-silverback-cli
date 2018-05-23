@@ -8,9 +8,11 @@ const getModifiedPaths = async () => {
     const repo = await NodeGit.Repository.open(dir)
 
     // See https://github.com/libgit2/libgit2/blob/master/include/git2/status.h#L137 for available flags
-    const optStatFlag = NodeGit.Status.OPT.INCLUDE_UNTRACKED + NodeGit.Status.OPT.INCLUDE_UNTRACKED_DIRS
+    const optStatFlag = NodeGit.Status.OPT.INCLUDE_UNTRACKED + NodeGit.Status.OPT.RECURSE_UNTRACKED_DIRS
 
-    const status = await repo.getStatusExt(optStatFlag)
+    const status = await repo.getStatusExt({
+        flags: optStatFlag,
+    })
 
     return status.map((el: {path(): string}) => el.path())
 }
