@@ -44,6 +44,7 @@ USAGE
 
 OPTIONS
   -h, --help       show CLI help
+  -d, --dir        the root of the project for which you wish to scaffold a model
 
 EXAMPLE
   $ silverback generate books
