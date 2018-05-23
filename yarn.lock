@@ -114,13 +114,40 @@
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.3.tgz#b8a74352977a23b604c01aa784f5b793443fb7dc"
 
+"@types/events@*":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/events/-/events-1.2.0.tgz#81a6731ce4df43619e5c8c945383b3e62a89ea86"
+
+"@types/lodash@^4.14.109":
+  version "4.14.109"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.109.tgz#b1c4442239730bf35cabaf493c772b18c045886d"
+
 "@types/mocha@^5":
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.0.tgz#b3c8e69f038835db1a7fdc0b3d879fc50506e29e"
 
+"@types/node@*":
+  version "10.1.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.1.2.tgz#1b928a0baa408fc8ae3ac012cc81375addc147c6"
+
 "@types/node@^10":
   version "10.1.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.1.0.tgz#2783ee1b6c47cbd4044f4a233976c1ac5fa9e942"
+
+"@types/nodegit@^0.18.7":
+  version "0.18.7"
+  resolved "https://registry.yarnpkg.com/@types/nodegit/-/nodegit-0.18.7.tgz#3f39fb0b1215c267b7de1f6ed72a80880364a466"
+  dependencies:
+    "@types/events" "*"
+    "@types/node" "*"
+
+"@types/nunjucks@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/nunjucks/-/nunjucks-3.0.0.tgz#9393e33128d12c834b4bc8db6bbfd18ebce474f0"
+
+"@types/pluralize@^0.0.28":
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@types/pluralize/-/pluralize-0.0.28.tgz#daf46f90fdaa6172600bfeac81e46065177f03ea"
 
 a-sync-waterfall@^1.0.0:
   version "1.0.0"

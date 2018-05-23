@@ -11,6 +11,10 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^1",
+    "@types/lodash": "^4.14.109",
+    "@types/nodegit": "^0.18.7",
+    "@types/nunjucks": "^3.0.0",
+    "@types/pluralize": "^0.0.28",
     "date-fns": "^1.29.0",
     "lodash": "^4.17.10",
     "nodegit": "^0.22.0",
@@ -57,9 +61,8 @@
   "repository": "icapps/nodejs-silverback-cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
-    "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "nyc mocha --forbid-only \"test/commands/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
   "types": "lib/index.d.ts"
