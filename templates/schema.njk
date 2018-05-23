@@ -3,6 +3,10 @@ import * as Joi from 'joi';
 export const {{ name }}Schema = {
   findAll{{ pluralModelName }}: {
     query: {
+      offset: Joi.number(),
+      limit: Joi.number(),
+      sortOrder: Joi.string().valid('asc', 'desc'),
+      sortField: Joi.string(),
     },
   },
   findById: {
@@ -19,6 +23,7 @@ export const {{ name }}Schema = {
       {{ name }}Id: Joi.string().guid(),
     },
     body: Joi.object({
+      updatedAt: Joi.date().iso().raw(),
     }),
   },
   partialUpdate: {
