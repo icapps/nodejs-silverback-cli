@@ -6,9 +6,9 @@ import {Generator} from '../generators'
 import {Transformer} from '../transformers'
 
 const enum ExitCodes {
-    Success,
-    InvariantsNotMet,
-    OpFailure,
+  Success,
+  InvariantsNotMet,
+  OpFailure,
 }
 
 export default class Generate extends Command {
@@ -21,35 +21,35 @@ export default class Generate extends Command {
   static args = [{name: 'name', required: true, description: 'the singular model name'}]
 
   async run() {
-      const {args, flags} = this.parse(Generate)
+    const {args, flags} = this.parse(Generate)
 
-      Env.initSettings(flags.dir || process.cwd())
+    Env.initSettings(flags.dir || process.cwd())
 
-      try {
-          // Check pre-conditions
-          this.log('Ensuring clean initial state')
-          await Checker.preConditions()
-      } catch (error) {
-          this.warn(`${error.message}`)
-          this.error('Aborting operation', {exit: ExitCodes.InvariantsNotMet})
-      }
+    try {
+      // Check pre-conditions
+      this.log('Ensuring clean initial state')
+      await Checker.preConditions()
+    } catch (error) {
+      this.warn(`${error.message}`)
+      this.error('Aborting operation', {exit: ExitCodes.InvariantsNotMet})
+    }
 
-      try {
-          // Create templates
-          this.log(`Generating templates for ${args.name}`)
-          const {templates, modifications} = new Generator({name: args.name}).run()
+    try {
+      // Create templates
+      this.log(`Generating templates for ${args.name}`)
+      const {templates, modifications} = new Generator({name: args.name}).run()
 
-          // Insert templates
-          this.log('Inserting templates')
-          await Transformer.insert(templates)
+      // Insert templates
+      this.log('Inserting templates')
+      await Transformer.insert(templates)
 
-          // Modify existing code
-          this.log('Modifying existing bindings')
-          await Transformer.modifyExistingFiles(modifications)
-      } catch (error) {
-          await Transformer.resetState()
-          this.warn(`${error.message}`)
-          this.error('Reverting to original state', {exit: ExitCodes.OpFailure})
-      }
+      // Modify existing code
+      this.log('Modifying existing bindings')
+      await Transformer.modifyExistingFiles(modifications)
+    } catch (error) {
+      await Transformer.resetState()
+      this.warn(`${error.message}`)
+      this.error('Reverting to original state', {exit: ExitCodes.OpFailure})
+    }
   }
 }

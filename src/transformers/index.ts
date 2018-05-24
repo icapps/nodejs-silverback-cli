@@ -155,10 +155,10 @@ export const Transformer = {
         const dir: string = Env.getSettings().dir
         const fullPath = path.resolve(dir, fileMod.outputPath)
 
-        let sourceCode = await promisify(readFile)(
+        const sourceCode = await promisify(readFile)(
           fullPath,
           {encoding: 'utf8'}
-        ) // TODO: Remove mutable state
+        )
 
         // Turn the TypeScript sourcefile into a parsable AST
         // (so we can find the correct insertion point)
@@ -177,14 +177,13 @@ export const Transformer = {
           sourceMod => InsertionPointSeekers[sourceMod.change](sourceFile, sourceMod)
         ).reverse() // We reverse the modifications map so changes in text length don't impact replacement targets
 
-        // @ts-ignore
-        for (const {start, end, replacement} of fileUpdates) {
-          sourceCode = sourceCode.slice(0, start) + replacement + sourceCode.slice(end)
-        }
+        const sourceModified = fileUpdates.reduce((source, {start, end, replacement}) => {
+          return source.slice(0, start) + replacement + source.slice(end)
+        }, sourceCode);
 
         return promisify(writeFile)(
           fullPath,
-          sourceCode,
+          sourceModified,
           {flag: FS_FLAGS.WRITE_CREATEIFNOTEXISTS}
         )
       }))
